@@ -1,0 +1,1 @@
+export function sharedSourceSummary(sources:{root:string}[]){if(sources.length<2)return null;const roots=[...new Set(sources.map(s=>s.root))];if(roots.length>=sources.length)return null;const sharedRoot=roots.find(root=>sources.filter(s=>s.root===root).length>=2);return sharedRoot?{citedCount:sources.length,rootCount:roots.length,sharedRoot}:null;}

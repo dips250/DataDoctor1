@@ -1,36 +1,128 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EvidenceDoctor
 
-## Getting Started
+> Before you trust the evidence, investigate the evidence behind it.
 
-First, run the development server:
+EvidenceDoctor reviews a report and its cited documents. It extracts claims and references, checks whether citations lead back to shared sources, identifies methodological limitations and funding relationships, checks basic PDF safety signals, and reveals hidden instructions aimed at automated reviewers. Each displayed finding links to an exact document quote or a public record.
 
-```bash
+EvidenceDoctor does not tell you what to believe. It tells you what to investigate before you believe it.
+
+## Run locally
+
+Requirements: Node.js 20 or newer.
+
+```sh
+npm ci
+cp .env.example .env.local # optional; leave values empty for offline analysis
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`. Select a PDF, TXT, or Markdown report and optional cited sources, or click **Run demo case**. The demo is fictional. **Download demo PDF** provides the same fictional report as a PDF with a tiny-font hidden instruction for the upload flow.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Commands:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```sh
+npm run typecheck
+npm test
+npm run build
+npm start
+npm run smoke # after build; starts a production server on port 3100
+```
 
-## Learn More
+Uploads are processed in memory. Each file is limited to 10 MB, all files together to 25 MB, with at most six files. PDF text extraction processes at most the first 40 pages. Scanned-image PDFs return a clear message because OCR is not supported.
 
-To learn more about Next.js, take a look at the following resources:
+## Optional services
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The app works with all values empty. Set values in `.env.local` for local development or in the hosting dashboard:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Variable | Purpose |
+| --- | --- |
+| `LLM_BASE_URL` | Base URL for an OpenAI-compatible chat completions API |
+| `LLM_API_KEY` | Credential for that API |
+| `LLM_MODEL` | Model name accepted by the configured API |
+| `OPENALEX_MAILTO` | Contact email for optional OpenAlex and Crossref DOI checks |
+| `ELEVENLABS_API_KEY` | Optional text-to-speech credential |
+| `ELEVENLABS_VOICE_ID` | Voice identifier for optional spoken briefings |
 
-## Deploy on Vercel
+All variables are listed with empty values in `.env.example`. LLM extraction sends redacted document text inside untrusted-data delimiters. Proposed quotes are checked against extracted text before use. The LLM can suggest wording, but deterministic code decides findings and scores. DOI enrichment sends DOI identifiers to Crossref and OpenAlex. Failed or slow services fall back to local analysis.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Architecture
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```mermaid
+flowchart LR
+  U[User upload] --> I[In-memory ingest and size checks]
+  I --> S[Hidden-content and PDF safety screen]
+  S --> X[Heuristic extraction]
+  X --> L[Source matching and citation chains]
+  L --> E{Optional services configured?}
+  E -->|LLM| R[Redacted quoted extraction and checked explanations]
+  E -->|DOI lookup| P[Crossref and OpenAlex metadata]
+  E -->|No| D[Deterministic detectors]
+  R --> D
+  P --> D
+  D --> V[Evidence and language validation]
+  V --> C[Score, graph and report]
+```
+
+Core modules live in `src/lib/pipeline/`; detectors are in `src/lib/detectors/`. API routes use Node.js runtime. `GET /api/health` is an immediate readiness check. `GET /api/demo` runs the same pipeline as an upload; it does not return precomputed findings.
+
+## Findings and scoring
+
+Each finding has one label: `FACT`, `POTENTIAL_CONCERN`, `INTERPRETATION`, or `UNKNOWN`. Findings without a verified quote or a public-record URL are removed before display. Uploaded text is rendered as text, never as HTML.
+
+Each score category begins at 100. The table gives base deductions by finding type; the severity multiplier is applied to each deduction, then the category is clamped to 0–100. The overall score is the rounded mean of the seven categories.
+
+| Category | Finding type | Base points |
+| --- | --- | ---: |
+| Document integrity | Hidden instruction | 60 |
+| Document integrity | File safety flag | 50 |
+| Source transparency | Funding statement not found | 22 |
+| Evidence traceability | Evidence dependency | 40 |
+| Evidence traceability | Untraced statistic | 18 |
+| Methodological strength | Sampling limitation | 40 |
+| Methodological strength | Causal language in survey or observational research | 14 |
+| Independence | Funding conflict | 50 |
+| Conflict transparency | Funding conflict | 32 |
+| Conflict transparency | Funding statement not found | 24 |
+| Verification | Untraced statistic | 32 |
+| Verification | Evidence dependency | 20 |
+
+| Severity | Multiplier |
+| --- | ---: |
+| High | 1.00 |
+| Medium | 0.80 |
+| Low | 0.50 |
+| Info | 0.35 |
+
+The score summarizes investigation signals. It is not a measure of truth and has not been scientifically validated.
+
+## Security and privacy
+
+- Files stay in process memory and are not written to disk. The application does not log document text or load analytics and third-party scripts.
+- Magic bytes are checked before parsing. PDFs are scanned for `/JavaScript`, `/JS`, `/OpenAction`, `/Launch`, `/EmbeddedFile`, and `/Encrypt`; encrypted PDFs are rejected. PDF actions are not executed.
+- Hidden text is screened before extraction and excluded from heuristic and LLM inputs. Detectors and scoring are deterministic.
+- Before external text calls, emails, phone numbers, street addresses, and long ID-like numbers are redacted. Author and organization names are retained for analysis. A privacy receipt lists external calls and redaction counts.
+- Analysis and briefing endpoints have an in-memory limit of 10 requests per minute per client IP. The limit is process-local and resets on restart.
+- Production responses include a Content Security Policy and related browser security headers.
+- Uploaded text is never rendered as HTML. The source contains no `dangerouslySetInnerHTML`.
+
+The PDF safety scan is a narrow byte-pattern check, not a malware scanner. It does not detect white text. Tiny-font detection uses extracted PDF text item height and may miss unusual encodings or layout tricks. Invisible Unicode and HTML comments are checked in supported text and PDF-extracted text. OCR is not supported, and scanned-image PDFs cannot be reviewed. In-memory processing does not protect a compromised host or network connection; deploy behind trusted infrastructure.
+
+## Real and optional behavior
+
+Local heuristics, PDF/text ingestion, hidden-instruction checks, sampling and causal-language checks, source-chain matching, scoring, evidence validation, privacy receipts, and the evidence graph work without credentials. The demo records and all people, organizations, products, and data in the fixtures are invented.
+
+LLM claim extraction and plain-language explanation require the three LLM variables. Crossref and OpenAlex lookup require `OPENALEX_MAILTO` and cited DOI values. Spoken briefings require ElevenLabs credentials. The app uses the current `POST /v1/text-to-speech/{voice_id}?output_format=mp3_44100_128` endpoint with `eleven_multilingual_v2`; see the [ElevenLabs text-to-speech API reference](https://elevenlabs.io/docs/api-reference/text-to-speech/convert). Optional services may be unavailable; local findings remain available when a service request fails.
+
+## Fictional demo and ethics
+
+The sample case is synthetic and makes no claims about real people, organizations, products, or studies. It exists to demonstrate repeated-source dependence, funding relationships, a narrow sample, statistics without matched sources, causal language, and hidden AI-targeted text.
+
+This tool supports investigation, not accusation. A documented funder relationship or methodological limitation does not establish misconduct or invalidate a result. Review the underlying evidence, contact authors when appropriate, and seek independent expertise before making consequential decisions. Do not use automated findings as a substitute for professional, scientific, or legal judgment.
+
+## Deploy on Deployxa
+
+1. Connect the GitHub repository in Deployxa. Next.js is auto-detected.
+2. Set the build command to `npm run build`.
+3. Set the start command to `npm start`.
+4. Add only the optional environment variables you want in the dashboard.
+5. Deploy. The server reads the platform `PORT` value and exposes `/api/health` for health checks.

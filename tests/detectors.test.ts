@@ -1,0 +1,20 @@
+import {describe,it,expect} from 'vitest';
+import {demoCase,cleanCase} from '@/fixtures/demoCase';
+import {ingestFixture} from '@/lib/pipeline/ingest';
+import {analyze} from '@/lib/pipeline/analyze';
+import {fileSafetyFlags} from '@/lib/detectors/fileSafety';
+import {detectFundingConflict} from '@/lib/detectors/fundingConflict';
+import {fundingNotDisclosed} from '@/lib/detectors/fundingNotDisclosed';
+import {extractAffiliation} from '@/lib/detectors/affiliationDocumented';
+import {extractSampleInfo,isSamplingLimitation} from '@/lib/detectors/samplingLimitation';
+import {containsCausalLanguage,designSupportsCausalLanguage} from '@/lib/detectors/causalLanguage';
+import {statisticNeedsTrace} from '@/lib/detectors/untracedStatistic';
+import {sharedSourceSummary} from '@/lib/detectors/evidenceDependency';
+describe('detectors on demo and clean fixtures',()=>{
+ const demoText=demoCase[0].text,cleanText=cleanCase[0].text;
+ it('detects a funding relationship in the demo only',()=>{expect(detectFundingConflict(demoText)?.funderName).toContain('Nimbusweld');expect(detectFundingConflict(cleanText)).toBeNull();expect(fundingNotDisclosed(demoText)).toBe(false);expect(fundingNotDisclosed(cleanText)).toBe(false);expect(fundingNotDisclosed('A report without disclosures.')).toBe(true);});
+ it('distinguishes narrow generalized sampling from a broad sample',()=>{expect(isSamplingLimitation(extractSampleInfo(demoText))).toBe(true);expect(isSamplingLimitation(extractSampleInfo(cleanText))).toBe(false);});
+ it('detects causal wording and respects study design',()=>{expect(containsCausalLanguage('This improves productivity.')).toBe(true);expect(containsCausalLanguage('Respondents reported their work.')).toBe(false);expect(designSupportsCausalLanguage('survey')).toBe(true);expect(designSupportsCausalLanguage('observational')).toBe(true);expect(designSupportsCausalLanguage('experiment')).toBe(false);});
+ it('checks document safety and affiliations on both fixtures',()=>{expect(fileSafetyFlags(ingestFixture(demoCase)[0])).toEqual([]);expect(fileSafetyFlags(ingestFixture(cleanCase)[0])).toEqual([]);expect(extractAffiliation(demoText)?.organization).toContain('Tellenby');expect(extractAffiliation(cleanText)?.organization).toContain('Independent');});
+ it('tests citation trace and source dependence on demo and clean cases',()=>{const demo=analyze(ingestFixture(demoCase)),clean=analyze(ingestFixture(cleanCase));expect(demo.claims.some(c=>statisticNeedsTrace(c,false))).toBe(true);expect(clean.claims.every(c=>!statisticNeedsTrace(c,true))).toBe(true);expect(demo.findings.some(f=>f.type==='evidence_dependency')).toBe(true);expect(clean.findings.some(f=>f.type==='evidence_dependency')).toBe(false);expect(sharedSourceSummary([{root:'shared'},{root:'shared'},{root:'other'}])).toMatchObject({citedCount:3,rootCount:2,sharedRoot:'shared'});expect(sharedSourceSummary([{root:'one'},{root:'two'}])).toBeNull();});
+});

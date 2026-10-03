@@ -1,0 +1,2 @@
+export type Affiliation={author:string;organization:string;authorQuote:string;organizationQuote:string};
+export function extractAffiliation(text:string):Affiliation|null{const author=text.match(/Authors?:\s*([^\n]+)/i)?.[1];const organization=text.match(/\n([^\n]*?(?:Institute|University|Research Center))\n/mi)?.[1];if(!author||!organization)return null;return{author,organization,authorQuote:`Authors: ${author}`,organizationQuote:organization};}

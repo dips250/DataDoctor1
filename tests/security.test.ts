@@ -3,9 +3,11 @@ import {redactSensitive} from '@/lib/privacy';
 import {validateUploadedFile} from '@/lib/pipeline/fileSafety';
 import {ingestText} from '@/lib/pipeline/ingest';
 import {analyze} from '@/lib/pipeline/analyze';
+import {checkRateLimit,clearRateLimits} from '@/lib/rateLimit';
 describe('privacy and upload validation',()=>{
  it('redacts contact details and identifiers but keeps author names',()=>{const r=redactSensitive('Authors: Ada Example. Contact ada@example.org or 415-555-0123 at 12 Oak Street; record 123456789012.');expect(r.text).toContain('Ada Example');expect(r.text).not.toContain('ada@example.org');expect(r.text).not.toContain('415-555-0123');expect(r.text).not.toContain('12 Oak Street');expect(r.text).not.toContain('123456789012');expect(Object.values(r.counts).reduce((a,b)=>a+b,0)).toBe(4);});
  it('rejects a text file with a PDF extension mismatch',()=>expect(()=>validateUploadedFile('report.pdf',new TextEncoder().encode('not a PDF'))).toThrow(/not a PDF/));
  it('finds active PDF action bytes',()=>expect(validateUploadedFile('x.pdf',new TextEncoder().encode('%PDF-1.7 /JavaScript')).flags).toContain('/JavaScript'));
+ it('limits each client to ten requests per minute',()=>{clearRateLimits();const request=new Request('http://local',{headers:{'x-forwarded-for':'limit-test-ip'}});for(let i=0;i<10;i++)expect(checkRateLimit(request,1000+i)).toBe(true);expect(checkRateLimit(request,1100)).toBe(false);clearRateLimits();});
  it('creates evidence-backed file safety findings',()=>{const d=ingestText('x.pdf','/JavaScript','primary');d.safety={detectedType:'pdf',typeMatchesExtension:true,pdfFlags:['/JavaScript'],encrypted:false};expect(analyze([d]).findings.some(f=>f.type==='file_safety')).toBe(true);});
 });
