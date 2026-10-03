@@ -101,62 +101,96 @@ export default function Home() {
   return (
     <main className="shell">
       <header className="top">
-        <a className="brand" href="#top" aria-label="EvidenceDoctor home">
-          <span className="brandmark" aria-hidden="true"><i /><i /><i /></span>
-          <span>evidence<span className="brandlight">doctor</span></span>
-          <span className="brandtag">FIELD INTELLIGENCE</span>
+        <a className="brand" href="#top" aria-label="DataDoctor home">
+          <BrandMark />
+          <span>Data<span className="brandlight">Doctor</span></span>
+          <span className="brandtag">EVIDENCE INTELLIGENCE</span>
         </a>
         <div className="topright">
-          <span className="live-indicator"><i /> SYSTEM READY</span>
-          <a href="#about">How it works <span aria-hidden="true">↗</span></a>
+          <span className="live-indicator"><i /> PRIVATE BY DESIGN</span>
+          <a href="#investigation">Start a review <span aria-hidden="true">↘</span></a>
         </div>
       </header>
 
       {!result ? (
-        <section className="intake" id="top">
-          <div className="hero-copy">
-            <p className="eyebrow"><span className="eyebrowline" /> EVIDENCE INVESTIGATION <span className="eyebrowsep">/</span> CYBERSECURITY &amp; PRIVACY</p>
-            <h1>Trust is earned.<br /><span>Evidence is examined.</span></h1>
-            <p className="lede">Trace a report back to the sources beneath it. Surface gaps, conflicts, and hidden instructions before the claims shape a decision.</p>
-            <div className="hero-actions">
-              <button className="button primary-cta" onClick={demo} disabled={busy}>
-                <span>{busy ? 'Investigating…' : 'Launch demo investigation'}</span><span className="buttonarrow" aria-hidden="true">↗</span>
-              </button>
-              <a className="download" href="/demo/primary-report.pdf" download>Get the sample report <span aria-hidden="true">↓</span></a>
+        <>
+          <section className="intro" id="top">
+            <div className="intro-stars" aria-hidden="true" />
+            <div className="intro-glow" aria-hidden="true" />
+            <div className="intro-copy">
+              <div className="intro-brand"><BrandMark large /><span>DataDoctor</span></div>
+              <p className="intro-kicker"><i /> INDEPENDENT EVIDENCE INTELLIGENCE</p>
+              <h1>Look closer.<br /><span>Know what supports the claim.</span></h1>
+              <p className="intro-lede">Investigate the sources behind a report. See what connects, what’s missing, and what deserves a second look.</p>
+              <div className="intro-actions">
+                <a className="button primary-cta" href="#investigation">Start an investigation <span className="buttonarrow" aria-hidden="true">↘</span></a>
+                <button className="button intro-demo" onClick={demo} disabled={busy}>{busy ? 'Opening demo…' : 'Explore the demo'} <span aria-hidden="true">↗</span></button>
+              </div>
+              <div className="intro-footnote"><span className="intro-lock">◇</span> Your documents are processed in memory and never stored.</div>
             </div>
-            <div className="trust-note"><span className="shield-icon" aria-hidden="true">◇</span><span><b>Private by design</b><small>Processed in memory. Nothing is stored.</small></span></div>
-          </div>
-
-          <div className="intake-side">
-            <div className="side-meta"><span>INVESTIGATION CONSOLE</span><span>ED / 001</span></div>
-            <div className={`drop ${drag ? 'drag' : ''}`} onDragOver={(e) => { e.preventDefault(); setDrag(true); }} onDragLeave={() => setDrag(false)} onDrop={(e) => { e.preventDefault(); setDrag(false); filesChosen(e.dataTransfer.files); }}>
-              <div className="drop-orbit" aria-hidden="true"><div className="orbit orbit-a" /><div className="orbit orbit-b" /><span className="upload-glyph">↑</span></div>
-              <p className="drop-kicker">START WITH THE SOURCE</p>
-              <h2>Bring the evidence<br />into focus.</h2>
-              <p className="drop-copy">Choose a report and, if available, the sources it cites.</p>
-              <button className="button secondary browse" onClick={() => input.current?.click()} disabled={busy}>Select documents <span aria-hidden="true">＋</span></button>
-              <input ref={input} hidden type="file" multiple accept=".pdf,.txt,.md,application/pdf,text/plain,text/markdown" onChange={(e) => filesChosen(e.target.files)} />
-              <p className="file-limit">PDF, TXT, MD <span>·</span> 10 MB each <span>·</span> up to 6 files</p>
+            <div className="intro-art" aria-hidden="true">
+              <div className="art-aura" />
+              <div className="art-orbit art-orbit-one"><i /><i /><i /></div>
+              <div className="art-orbit art-orbit-two"><i /><i /></div>
+              <svg className="art-network" viewBox="0 0 480 480" fill="none">
+                <circle className="network-ring" cx="240" cy="240" r="174" />
+                <circle className="network-ring ring-two" cx="240" cy="240" r="124" />
+                <path className="network-line" d="M89 174 183 221 278 104 379 179 303 286 163 341 89 174Zm94 47 110 65 86-107M183 221l-20 120m115-237 25 182M89 174l190-70" />
+                <path className="network-sweep" d="M70 240h340M240 70v340" />
+                <circle className="network-node node-primary" cx="240" cy="240" r="29" />
+                <circle className="network-node" cx="89" cy="174" r="6" />
+                <circle className="network-node node-blue" cx="183" cy="221" r="8" />
+                <circle className="network-node" cx="278" cy="104" r="6" />
+                <circle className="network-node node-pink" cx="379" cy="179" r="7" />
+                <circle className="network-node" cx="303" cy="286" r="6" />
+                <circle className="network-node node-blue" cx="163" cy="341" r="7" />
+                <path className="network-pulse" d="M64 240h52l22-34 30 69 25-43h61" />
+              </svg>
+              <div className="art-center"><BrandMark large /><span>TRACE<br />THE SOURCE</span></div>
+              <div className="art-tag tag-top"><i /> SOURCE LINKS <b>04</b></div>
+              <div className="art-tag tag-bottom">LIVE EVIDENCE MAP <span>●</span></div>
             </div>
-            <div className="console-footer"><span><i className="statusdot" /> READY FOR INPUT</span><span>DROP FILES TO BEGIN</span></div>
-          </div>
+            <a className="intro-scroll" href="#investigation"><span className="scroll-track"><i /></span> SCROLL TO BEGIN</a>
+            <div className="intro-index">01 <span>/</span> 03</div>
+          </section>
 
-          {error && <div role="alert" className="error"><b>We couldn’t analyze that document</b><p>{error}</p></div>}
-
-          <div className="capabilities">
-            <div className="cap-intro"><span className="eyebrowline" /> REVIEW CAPABILITIES</div>
-            <div className="capability"><span className="cap-number">01</span><span><b>Trace sources</b><small>Follow claims to their roots</small></span><span className="cap-arrow">↗</span></div>
-            <div className="capability"><span className="cap-number">02</span><span><b>Surface signals</b><small>Spot gaps and relationships</small></span><span className="cap-arrow">↗</span></div>
-            <div className="capability"><span className="cap-number">03</span><span><b>Inspect the unseen</b><small>Reveal hidden AI instructions</small></span><span className="cap-arrow">↗</span></div>
-          </div>
-          <div className="service-strip">
-            <span className="service-label">OPTIONAL CONNECTIONS</span>
-            <ServicePill label="AI extraction" active={status.llm} />
-            <ServicePill label="Public records" active={status.publicRecords} />
-            <ServicePill label="Voice briefing" active={status.voice} />
-            <span className="service-note">OFFLINE-CAPABLE CORE</span>
-          </div>
-        </section>
+          <section className="intake" id="investigation">
+            <div className="intake-heading">
+              <div><p className="eyebrow"><span className="eyebrowline" /> YOUR WORKSPACE <span className="eyebrowsep">/</span> 01</p><h2>Start with the evidence.</h2><p>Upload a report and any sources it cites. DataDoctor will map the claims back to what supports them.</p></div>
+              <a className="download" href="/demo/primary-report.pdf" download>Download sample report <span aria-hidden="true">↓</span></a>
+            </div>
+            <div className="intake-grid">
+              <div className="intake-side">
+                <div className="side-meta"><span>DOCUMENT INTAKE</span><span>DD / 001</span></div>
+                <div className={`drop ${drag ? 'drag' : ''}`} onDragOver={(e) => { e.preventDefault(); setDrag(true); }} onDragLeave={() => setDrag(false)} onDrop={(e) => { e.preventDefault(); setDrag(false); filesChosen(e.dataTransfer.files); }}>
+                  <div className="drop-orbit" aria-hidden="true"><div className="orbit orbit-a" /><div className="orbit orbit-b" /><span className="upload-glyph">↑</span></div>
+                  <p className="drop-kicker">BEGIN A NEW REVIEW</p>
+                  <h3>Choose a report<br />and its cited sources.</h3>
+                  <p className="drop-copy">Drop files here or browse your device to begin.</p>
+                  <button className="button secondary browse" onClick={() => input.current?.click()} disabled={busy}>Select documents <span aria-hidden="true">＋</span></button>
+                  <input ref={input} hidden type="file" multiple accept=".pdf,.txt,.md,application/pdf,text/plain,text/markdown" onChange={(e) => filesChosen(e.target.files)} />
+                  <p className="file-limit">PDF, TXT, MD <span>·</span> 10 MB each <span>·</span> up to 6 files</p>
+                </div>
+                <div className="console-footer"><span><i className="statusdot" /> READY FOR INPUT</span><span>PRIVATE SESSION</span></div>
+              </div>
+              <aside className="intake-aside">
+                <p className="drop-kicker">WHAT DATA DOCTOR LOOKS FOR</p>
+                <div className="intake-feature"><span>01</span><div><b>Source relationships</b><small>See where cited research leads.</small></div><i>↗</i></div>
+                <div className="intake-feature"><span>02</span><div><b>Evidence gaps</b><small>Find claims that need more support.</small></div><i>↗</i></div>
+                <div className="intake-feature"><span>03</span><div><b>Hidden instructions</b><small>Reveal text aimed at AI reviewers.</small></div><i>↗</i></div>
+                <div className="intake-demo"><span className="demo-orb">✳</span><div><b>Want a guided look?</b><small>Explore a fictional case and its evidence map.</small></div><button onClick={demo} disabled={busy} aria-label="Run demo case">↗</button></div>
+              </aside>
+            </div>
+            {error && <div role="alert" className="error"><b>We couldn’t analyze that document</b><p>{error}</p></div>}
+            <div className="capabilities">
+              <div className="cap-intro"><span className="eyebrowline" /> OPTIONAL CONNECTIONS</div>
+              <ServicePill label="AI extraction" active={status.llm} />
+              <ServicePill label="Public records" active={status.publicRecords} />
+              <ServicePill label="Voice briefing" active={status.voice} />
+              <span className="service-note">CORE REVIEW WORKS WITHOUT API KEYS</span>
+            </div>
+          </section>
+        </>
       ) : (
         <section className="results">
           <div className="resulthead">
@@ -203,9 +237,13 @@ export default function Home() {
         </section>
       )}
 
-      <footer id="about"><span>EvidenceDoctor <i>—</i> Evidence, examined.</span><p>EvidenceDoctor does not tell you what to believe. It tells you what to investigate before you believe it.</p><span className="footer-right">PRIVACY FIRST <i /> DOCUMENTS ARE ANALYZED IN MEMORY</span></footer>
+      <footer id="about"><span>DataDoctor <i>—</i> Evidence, examined.</span><p>DataDoctor does not tell you what to believe. It tells you what to investigate before you believe it.</p><span className="footer-right">PRIVACY FIRST <i /> DOCUMENTS ARE ANALYZED IN MEMORY</span></footer>
     </main>
   );
+}
+
+function BrandMark({ large = false }: { large?: boolean }) {
+  return <span className={`brandmark ${large ? 'brandmark-large' : ''}`} aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path className="mark-orbit" d="M20 3.5 34.3 11.7v16.6L20 36.5 5.7 28.3V11.7L20 3.5Z"/><path className="mark-pulse" d="M9 21h6l3.4-7 5.1 13 3.3-7H31"/><circle className="mark-core" cx="20" cy="20" r="2.1"/></svg></span>;
 }
 
 function ServicePill({ label, active }: { label: string; active: boolean }) {

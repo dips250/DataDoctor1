@@ -1,10 +1,10 @@
-# EvidenceDoctor
+# DataDoctor
 
 > Before you trust the evidence, investigate the evidence behind it.
 
-EvidenceDoctor reviews a report and its cited documents. It extracts claims and references, checks whether citations lead back to shared sources, identifies methodological limitations and funding relationships, checks basic PDF safety signals, and reveals hidden instructions aimed at automated reviewers. Each displayed finding links to an exact document quote or a public record.
+DataDoctor reviews a report and its cited documents. It extracts claims and references, checks whether citations lead back to shared sources, identifies methodological limitations and funding relationships, checks basic PDF safety signals, and reveals hidden instructions aimed at automated reviewers. Each displayed finding links to an exact document quote or a public record.
 
-EvidenceDoctor does not tell you what to believe. It tells you what to investigate before you believe it.
+DataDoctor does not tell you what to believe. It tells you what to investigate before you believe it.
 
 ## Run locally
 
