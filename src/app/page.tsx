@@ -18,10 +18,50 @@ export default function Home() {
   const [briefError, setBriefError] = useState('');
   const [audioUrl, setAudioUrl] = useState('');
   const input = useRef<HTMLInputElement>(null);
+  const progressIndicator = useRef<HTMLElement>(null);
 
   useEffect(() => {
     fetch('/api/status').then((r) => r.json()).then(setStatus).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const range = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = range > 0 ? Math.min(100, (window.scrollY / range) * 100) : 0;
+        progressIndicator.current?.style.setProperty('transform', `scaleX(${progress / 100})`);
+      });
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.add('motion-ready');
+    const items = [...document.querySelectorAll<HTMLElement>('.reveal-on-scroll:not(.is-visible)')];
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+      items.forEach((item) => item.classList.add('is-visible'));
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: .12, rootMargin: '0px 0px -36px 0px' });
+    items.forEach((item) => observer.observe(item));
+    return () => observer.disconnect();
+  }, [result, activeTab]);
 
   async function demo() {
     await run('/api/demo');
@@ -100,6 +140,7 @@ export default function Home() {
 
   return (
     <main className="shell">
+      <div className="scroll-progress" aria-hidden="true"><i ref={progressIndicator} /></div>
       <header className="top">
         <a className="brand" href="#top" aria-label="DataDoctor home">
           <BrandMark />
@@ -118,17 +159,17 @@ export default function Home() {
             <div className="intro-stars" aria-hidden="true" />
             <div className="intro-glow" aria-hidden="true" />
             <div className="intro-copy">
-              <div className="intro-brand"><BrandMark large /><span>DataDoctor</span></div>
-              <p className="intro-kicker"><i /> INDEPENDENT EVIDENCE INTELLIGENCE</p>
-              <h1>Look closer.<br /><span>Know what supports the claim.</span></h1>
-              <p className="intro-lede">Investigate the sources behind a report. See what connects, what’s missing, and what deserves a second look.</p>
-              <div className="intro-actions">
+              <div className="intro-brand reveal-on-scroll reveal-delay-1"><BrandMark large /><span>DataDoctor</span></div>
+              <p className="intro-kicker reveal-on-scroll reveal-delay-2"><i /> INDEPENDENT EVIDENCE INTELLIGENCE</p>
+              <h1 className="reveal-on-scroll reveal-delay-3">Look closer.<br /><span>Know what supports the claim.</span></h1>
+              <p className="intro-lede reveal-on-scroll reveal-delay-4">Investigate the sources behind a report. See what connects, what’s missing, and what deserves a second look.</p>
+              <div className="intro-actions reveal-on-scroll reveal-delay-5">
                 <a className="button primary-cta" href="#investigation">Start an investigation <span className="buttonarrow" aria-hidden="true">↘</span></a>
                 <button className="button intro-demo" onClick={demo} disabled={busy}>{busy ? 'Opening demo…' : 'Explore the demo'} <span aria-hidden="true">↗</span></button>
               </div>
-              <div className="intro-footnote"><span className="intro-lock">◇</span> Your documents are processed in memory and never stored.</div>
+              <div className="intro-footnote reveal-on-scroll reveal-delay-6"><span className="intro-lock">◇</span> Your documents are processed in memory and never stored.</div>
             </div>
-            <div className="intro-art" aria-hidden="true">
+            <div className="intro-art reveal-on-scroll reveal-delay-3" aria-hidden="true">
               <div className="art-aura" />
               <div className="art-orbit art-orbit-one"><i /><i /><i /></div>
               <div className="art-orbit art-orbit-two"><i /><i /></div>
@@ -150,17 +191,17 @@ export default function Home() {
               <div className="art-tag tag-top"><i /> SOURCE LINKS <b>04</b></div>
               <div className="art-tag tag-bottom">LIVE EVIDENCE MAP <span>●</span></div>
             </div>
-            <a className="intro-scroll" href="#investigation"><span className="scroll-track"><i /></span> SCROLL TO BEGIN</a>
+            <a className="intro-scroll reveal-on-scroll" href="#investigation"><span className="scroll-track"><i /></span> SCROLL TO BEGIN</a>
             <div className="intro-index">01 <span>/</span> 03</div>
           </section>
 
           <section className="intake" id="investigation">
             <div className="intake-heading">
-              <div><p className="eyebrow"><span className="eyebrowline" /> YOUR WORKSPACE <span className="eyebrowsep">/</span> 01</p><h2>Start with the evidence.</h2><p>Upload a report and any sources it cites. DataDoctor will map the claims back to what supports them.</p></div>
+              <div className="reveal-on-scroll"><p className="eyebrow"><span className="eyebrowline" /> YOUR WORKSPACE <span className="eyebrowsep">/</span> 01</p><h2>Start with the evidence.</h2><p>Upload a report and any sources it cites. DataDoctor will map the claims back to what supports them.</p></div>
               <a className="download" href="/demo/primary-report.pdf" download>Download sample report <span aria-hidden="true">↓</span></a>
             </div>
             <div className="intake-grid">
-              <div className="intake-side">
+              <div className="intake-side reveal-on-scroll">
                 <div className="side-meta"><span>DOCUMENT INTAKE</span><span>DD / 001</span></div>
                 <div className={`drop ${drag ? 'drag' : ''}`} onDragOver={(e) => { e.preventDefault(); setDrag(true); }} onDragLeave={() => setDrag(false)} onDrop={(e) => { e.preventDefault(); setDrag(false); filesChosen(e.dataTransfer.files); }}>
                   <div className="drop-orbit" aria-hidden="true"><div className="orbit orbit-a" /><div className="orbit orbit-b" /><span className="upload-glyph">↑</span></div>
@@ -173,7 +214,7 @@ export default function Home() {
                 </div>
                 <div className="console-footer"><span><i className="statusdot" /> READY FOR INPUT</span><span>PRIVATE SESSION</span></div>
               </div>
-              <aside className="intake-aside">
+              <aside className="intake-aside reveal-on-scroll reveal-delay-2">
                 <p className="drop-kicker">WHAT DATA DOCTOR LOOKS FOR</p>
                 <div className="intake-feature"><span>01</span><div><b>Source relationships</b><small>See where cited research leads.</small></div><i>↗</i></div>
                 <div className="intake-feature"><span>02</span><div><b>Evidence gaps</b><small>Find claims that need more support.</small></div><i>↗</i></div>
@@ -182,7 +223,7 @@ export default function Home() {
               </aside>
             </div>
             {error && <div role="alert" className="error"><b>We couldn’t analyze that document</b><p>{error}</p></div>}
-            <div className="capabilities">
+            <div className="capabilities reveal-on-scroll">
               <div className="cap-intro"><span className="eyebrowline" /> OPTIONAL CONNECTIONS</div>
               <ServicePill label="AI extraction" active={status.llm} />
               <ServicePill label="Public records" active={status.publicRecords} />
@@ -193,7 +234,7 @@ export default function Home() {
         </>
       ) : (
         <section className="results">
-          <div className="resulthead">
+          <div className="resulthead reveal-on-scroll">
             <div>
               <p className="eyebrow"><span className="eyebrowline" /> INVESTIGATION REPORT <span className="eyebrowsep">/</span> CASE FILE</p>
               <h1>{result.docs.find((doc) => doc.role === 'primary')?.pages[0]?.text.match(/^#\s*(.+)$/m)?.[1] ?? result.docs.find((doc) => doc.role === 'primary')?.fileName}</h1>
@@ -202,7 +243,7 @@ export default function Home() {
             <button className="button secondary new-review" onClick={() => { setResult(null); setError(''); }}>＋ New investigation</button>
           </div>
 
-          <div className="scoregrid">
+          <div className="scoregrid reveal-on-scroll reveal-delay-2">
             <div className="scorecard">
               <div className="score-ring-wrap"><span className="score-orbit" /><div className="ring" style={{ '--score': `${result.score.overall}%` } as React.CSSProperties}><span>{result.score.overall}<small>/100</small></span></div><span className="ring-caption">AUTOMATED SIGNAL</span></div>
               <div className="score-copy"><p className="eyebrow">SCREENING SUMMARY</p><h2>Review signal</h2><p>{result.score.meaning}</p><span className="score-caveat">Open each factor to see coverage, limits, and document-backed findings.</span></div>
@@ -211,7 +252,7 @@ export default function Home() {
           </div>
 
           {result.findings.filter((finding) => finding.type === 'hidden_instruction').map((finding) => (
-            <article className="hiddenalert" key={finding.id}>
+            <article className="hiddenalert reveal-on-scroll" key={finding.id}>
               <div className="alerticon">!</div><div className="alertbody"><p className="eyebrow">HIDDEN TEXT REVEALED <span className="eyebrowsep">/</span> PAGE {finding.evidence[0]?.page}</p><h2>{finding.title}</h2>
                 <blockquote>{finding.evidence[0]?.quote}</blockquote>
                 <button className="textbutton" onClick={() => { setSelectedFindingId(finding.id); setActiveTab('chain'); }}>Trace in evidence chain <span>↗</span></button>
@@ -220,20 +261,20 @@ export default function Home() {
             </article>
           ))}
 
-          <div className="tabrow" role="tablist" aria-label="Investigation views"><div className="tabs-label">INVESTIGATION DETAIL</div><button role="tab" aria-selected={activeTab === 'symptoms'} className={activeTab === 'symptoms' ? 'selected' : ''} onClick={() => setActiveTab('symptoms')}><span className="tab-icon">⌁</span> Findings <small>{result.findings.length}</small></button><button role="tab" aria-selected={activeTab === 'chain'} className={activeTab === 'chain' ? 'selected' : ''} onClick={() => setActiveTab('chain')}><span className="tab-icon">⌘</span> Evidence chain</button><span className="graph-count">{result.graph.nodes.length} NODES <i /> {result.graph.edges.length} LINKS</span></div>
-          {activeTab === 'symptoms' ? <div className="findings">{[...result.findings].filter((finding) => finding.type !== 'hidden_instruction').sort((a, b) => ({ high: 0, medium: 1, low: 2, info: 3 }[a.severity] - ({ high: 0, medium: 1, low: 2, info: 3 }[b.severity]))).map((finding, index) => <article className="finding" key={finding.id}>
+          <div className="tabrow reveal-on-scroll" role="tablist" aria-label="Investigation views"><div className="tabs-label">INVESTIGATION DETAIL</div><button role="tab" aria-selected={activeTab === 'symptoms'} className={activeTab === 'symptoms' ? 'selected' : ''} onClick={() => setActiveTab('symptoms')}><span className="tab-icon">⌁</span> Findings <small>{result.findings.length}</small></button><button role="tab" aria-selected={activeTab === 'chain'} className={activeTab === 'chain' ? 'selected' : ''} onClick={() => setActiveTab('chain')}><span className="tab-icon">⌘</span> Evidence chain</button><span className="graph-count">{result.graph.nodes.length} NODES <i /> {result.graph.edges.length} LINKS</span></div>
+          {activeTab === 'symptoms' ? <div className="findings">{[...result.findings].filter((finding) => finding.type !== 'hidden_instruction').sort((a, b) => ({ high: 0, medium: 1, low: 2, info: 3 }[a.severity] - ({ high: 0, medium: 1, low: 2, info: 3 }[b.severity]))).map((finding, index) => <article className="finding reveal-on-scroll" style={{ '--reveal-delay': `${Math.min(index % 4, 3) * 65}ms` } as React.CSSProperties} key={finding.id}>
             <div className="findingtop"><span className="finding-index">SIGNAL {String(index + 1).padStart(2, '0')}</span><span className={`chip ${labelTone(finding.label)}`}><i />{finding.label.replace('_', ' ')}</span><span className={`severity severity-${finding.severity}`}>{finding.severity}</span></div>
             <h3>{finding.title}</h3><p>{finding.whatWasFound}</p><div className="why"><b>WHY IT MATTERS</b><p>{finding.whyItMatters}</p></div><p className="uncertain"><span>LIMITS</span> {finding.uncertainty}</p>
             <details className="finding-evidence"><summary><span>Evidence references</span><b>{String(finding.evidence.length).padStart(2, '0')} <i>＋</i></b></summary><Evidence f={finding} /></details>
             <button className="textbutton" onClick={() => { setSelectedFindingId(finding.id); setActiveTab('chain'); }}>Trace finding <span>↗</span></button>
           </article>)}</div> : <EvidenceGraph result={result} selectedFindingId={selectedFindingId} />}
 
-          <div className="sectiontitle"><div><p className="eyebrow"><span className="eyebrowline" /> RECOMMENDED ACTIONS</p><h2>Treatment plan</h2></div><span>YOUR NEXT INVESTIGATION STEPS</span></div>
-          <div className="treatment">{[...new Set(result.findings.flatMap((finding) => finding.recommendedActions))].map((action, index) => <label key={index}><input type="checkbox"/><span className="treatment-no">{String(index + 1).padStart(2, '0')}</span><span>{action}</span><i>↗</i></label>)}</div>
+          <div className="sectiontitle reveal-on-scroll"><div><p className="eyebrow"><span className="eyebrowline" /> RECOMMENDED ACTIONS</p><h2>Treatment plan</h2></div><span>YOUR NEXT INVESTIGATION STEPS</span></div>
+          <div className="treatment reveal-on-scroll">{[...new Set(result.findings.flatMap((finding) => finding.recommendedActions))].map((action, index) => <label key={index}><input type="checkbox"/><span className="treatment-no">{String(index + 1).padStart(2, '0')}</span><span>{action}</span><i>↗</i></label>)}</div>
 
-          <div className="twocol"><section><div className="sectiontitle"><div><p className="eyebrow"><span className="eyebrowline" /> PROCESS TRACE</p><h2>Lab log</h2></div></div><div className="log">{result.labLog.map((entry, index) => <div key={index}><span className="log-index">{String(index + 1).padStart(2, '0')}</span><span className="log-stage">{entry.stage}</span><span>{entry.detail}</span><b>{entry.ms}<small> ms</small></b></div>)}</div></section><section><div className="sectiontitle"><div><p className="eyebrow"><span className="eyebrowline" /> TRANSPARENCY RECORD</p><h2>Privacy receipt</h2></div></div><div className="receipt"><div className="receipt-seal">◇</div><div><span className="receipt-status"><i /> IN-MEMORY SESSION</span><b>{result.privacy.statement}</b><p>Storage status <strong>None</strong></p><p>{result.privacy.externalCalls.length ? result.privacy.externalCalls.map((call) => `${call.service}: ${call.purpose}`).join(' · ') : 'No external services were contacted.'}</p></div></div></section></div>
+          <div className="twocol reveal-on-scroll"><section><div className="sectiontitle"><div><p className="eyebrow"><span className="eyebrowline" /> PROCESS TRACE</p><h2>Lab log</h2></div></div><div className="log">{result.labLog.map((entry, index) => <div key={index}><span className="log-index">{String(index + 1).padStart(2, '0')}</span><span className="log-stage">{entry.stage}</span><span>{entry.detail}</span><b>{entry.ms}<small> ms</small></b></div>)}</div></section><section><div className="sectiontitle"><div><p className="eyebrow"><span className="eyebrowline" /> TRANSPARENCY RECORD</p><h2>Privacy receipt</h2></div></div><div className="receipt"><div className="receipt-seal">◇</div><div><span className="receipt-status"><i /> IN-MEMORY SESSION</span><b>{result.privacy.statement}</b><p>Storage status <strong>None</strong></p><p>{result.privacy.externalCalls.length ? result.privacy.externalCalls.map((call) => `${call.service}: ${call.purpose}`).join(' · ') : 'No external services were contacted.'}</p></div></div></section></div>
 
-          <div className="printrow">{result.mode.voice && <div className="briefing"><button className="button secondary" onClick={createBrief} disabled={briefBusy}>{briefBusy ? 'Preparing briefing…' : 'Create spoken briefing'}</button>{audioUrl && <audio controls src={audioUrl} aria-label="Doctor's briefing audio" />}{briefError && <p role="alert">{briefError}</p>}</div>}<button className="button secondary print-button" onClick={() => window.print()}><span>↗</span> Export report</button></div>
+          <div className="printrow reveal-on-scroll">{result.mode.voice && <div className="briefing"><button className="button secondary" onClick={createBrief} disabled={briefBusy}>{briefBusy ? 'Preparing briefing…' : 'Create spoken briefing'}</button>{audioUrl && <audio controls src={audioUrl} aria-label="Doctor's briefing audio" />}{briefError && <p role="alert">{briefError}</p>}</div>}<button className="button secondary print-button" onClick={() => window.print()}><span>↗</span> Export report</button></div>
         </section>
       )}
 
