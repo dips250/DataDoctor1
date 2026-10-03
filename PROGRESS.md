@@ -5,8 +5,8 @@ In progress. Core ingestion, screening, extraction, linking, deterministic detec
 
 ## Steps 1 to 9
 - Step 1: done — scaffold, core pipeline, demo API, deterministic findings and tests. Commit hash: 6b89fc6.
-- Step 2: in progress — responsive intake and results interface. Commit hash: pending.
-- Step 3: not started — security and privacy. Commit hash: —.
+- Step 2: done — responsive intake and results interface with evidence, score, lab log and privacy receipt. Commit hash: 24f0950.
+- Step 3: done — upload magic-byte checks, PDF active-content scan, redaction utilities, per-IP rate limits, security headers and evidence-backed safety findings. Commit hash: pending.
 - Step 4: not started — PDF path and smoke test. Commit hash: —.
 - Step 5: not started — evidence chain graph. Commit hash: —.
 - Step 6: not started — optional LLM and status modes. Commit hash: —.
@@ -15,7 +15,7 @@ In progress. Core ingestion, screening, extraction, linking, deterministic detec
 - Step 9: not started — hardening. Commit hash: —.
 
 ## Last verification
-2026-10-03 21:26 UTC — typecheck: pass; tests: pass (4); production build: pass (Next.js webpack build; required compiler subprocess permission); lint: pass; smoke: not yet implemented.
+2026-10-03 21:28 UTC — typecheck: pass; tests: pass (8); production build: pass (Next.js webpack build; required compiler subprocess permission); lint: pass; smoke: not yet implemented.
 
 ## Assumptions made
 - The repository checkout is `/workspace/DataDoctor`; the workspace root itself is not the repository.
@@ -23,7 +23,7 @@ In progress. Core ingestion, screening, extraction, linking, deterministic detec
 - TXT and Markdown are accepted in the initial analyzer route; PDF parsing will be implemented in step 4.
 
 ## UNVERIFIED items
-- Production smoke test and upload flow.
+- Production smoke test and PDF upload flow (scheduled for step 4).
 
 ## Dependencies added beyond section 4 and why
 - None.
