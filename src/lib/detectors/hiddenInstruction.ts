@@ -1,0 +1,4 @@
+import type {SourceDoc} from '../types';
+const pattern=/ignore\s+(?:all\s+)?previous\s+instructions|for\s+(?:llm|ai)\s+reviewers|give\s+a\s+positive\s+review|do\s+not\s+highlight\s+any\s+negatives|rate\s+this.{0,40}(?:trustworthy|reliable)|as\s+an\s+ai/ig;
+const invisible=/[\u200B-\u200D\u2060\uFEFF]/g;
+export function scanHidden(docs:SourceDoc[]):SourceDoc[]{return docs.map(d=>({...d,hiddenSpans:d.pages.flatMap(p=>{const found:{page:number;text:string;method:string}[]=[]; for(const m of p.text.matchAll(/<!--[\s\S]*?-->/g)) found.push({page:p.page,text:m[0].slice(4,-3).trim(),method:'html comment'}); for(const m of p.text.matchAll(pattern)) if(!found.some(x=>x.text.includes(m[0])))found.push({page:p.page,text:m[0],method:'visible instruction pattern'}); const z=p.text.match(invisible); if(z)found.push({page:p.page,text:p.text.slice(Math.max(0,p.text.indexOf(z[0])-30),p.text.indexOf(z[0])+90),method:'invisible Unicode'}); return found;})}));}

@@ -1,0 +1,5 @@
+import type {Finding} from './types';
+const deductions:Record<string,Record<string,number>>={
+ 'Document integrity':{hidden_instruction:48,file_safety:45},'Source transparency':{funding_not_disclosed:22},'Evidence traceability':{evidence_dependency:26,untraced_statistic:16},'Methodological strength':{sampling_limitation:26,causal_language:14},'Independence':{funding_conflict:38},'Conflict transparency':{funding_conflict:30,funding_not_disclosed:24},'Verification':{untraced_statistic:24,evidence_dependency:16}
+};
+export function scoreFindings(findings:Finding[]){const categories=Object.entries(deductions).map(([name,table])=>{const reasons:string[]=[];let score=100;for(const f of findings){const n=table[f.type]??0;if(n){score-=n;reasons.push(`${f.title} (-${n})`);}}return{name,score:Math.max(0,score),reasons};});return{overall:Math.round(categories.reduce((s,c)=>s+c.score,0)/categories.length),categories,meaning:'This score summarizes what the investigation found. It is not a measure of truth and has not been scientifically validated.'};}
