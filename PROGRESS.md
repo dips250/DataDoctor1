@@ -7,15 +7,15 @@ In progress. Core ingestion, screening, extraction, linking, deterministic detec
 - Step 1: done — scaffold, core pipeline, demo API, deterministic findings and tests. Commit hash: 6b89fc6.
 - Step 2: done — responsive intake and results interface with evidence, score, lab log and privacy receipt. Commit hash: 24f0950.
 - Step 3: done — upload magic-byte checks, PDF active-content scan, redaction utilities, per-IP rate limits, security headers and evidence-backed safety findings. Commit hash: 7d420c4.
-- Step 4: done — page-by-page PDF extraction and limits, tiny-font detection, generated demo PDF, PDF multipart upload and passing production smoke test. Commit hash: pending.
-- Step 5: not started — evidence chain graph. Commit hash: —.
+- Step 4: done — page-by-page PDF extraction and limits, tiny-font detection, generated demo PDF, PDF multipart upload and passing production smoke test. Commit hash: 491082d.
+- Step 5: done — React Flow chain with citation, source-document and shared root nodes; finding controls highlight connected nodes and edges. Commit hash: pending.
 - Step 6: not started — optional LLM and status modes. Commit hash: —.
 - Step 7: not started — optional public records, print report and README. Commit hash: —.
 - Step 8: not started — optional ElevenLabs briefing. Commit hash: —.
 - Step 9: not started — hardening. Commit hash: —.
 
 ## Last verification
-2026-10-03 21:34 UTC — typecheck: pass; tests: pass (14); production build: pass; smoke: pass (health, demo findings, uploaded demo PDF tiny-font finding, production security headers); lint: pass.
+2026-10-03 21:38 UTC — typecheck: pass; tests: pass (15); production build: pass; smoke: pass (health, demo findings, uploaded demo PDF tiny-font finding, production security headers); lint: pass.
 
 ## Assumptions made
 - The repository checkout is `/workspace/DataDoctor`; the workspace root itself is not the repository.
