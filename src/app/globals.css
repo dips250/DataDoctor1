@@ -522,6 +522,13 @@ body {
 .intake .service-pill.active small { color: #c4aaff; }
 .error { border-color: rgba(255, 128, 150, .32); background: rgba(94, 33, 56, .25); }
 .error p { color: #dda1aa; }
+.categories summary .dimension-status { color: #a69bce; font-size: 7px; letter-spacing: .1em; font-weight: 750; text-align: right; }
+.categories summary .dimension-status.not_assessed { color: #8e89a7; }
+.categories summary .dimension-status.partial { color: #a8cfff; }
+.categories .dimension-guidance { margin: 9px 0 5px; color: #b0abc8; font-size: 9px; line-height: 1.55; }
+.categories details ul { margin-top: 5px; }
+.categories details li { color: #8c89a8; }
+.categories details:has(.dimension-status.not_assessed) .dimension-guidance { padding: 8px 10px; border-left: 1px solid rgba(169, 153, 231, .36); background: rgba(168, 153, 235, .045); }
 
 @keyframes intro-rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes intro-fade { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }

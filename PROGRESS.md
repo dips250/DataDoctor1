@@ -1,9 +1,9 @@
-# EvidenceDoctor progress
+# DataDoctor progress
 
 ## Final report
-EvidenceDoctor is implemented through steps 1–9. It accepts PDF/TXT/Markdown reports and cited sources, extracts claims and methods, traces citations to uploaded sources and underlying datasets, checks hidden instructions and PDF safety signals, and presents evidence-backed findings with a deterministic severity-weighted score and interactive graph. The intake/result interface, privacy receipt, treatment checklist, lab log, print view, optional OpenAI-compatible analysis, Crossref/OpenAlex lookup, and ElevenLabs briefing are included.
+DataDoctor is implemented through steps 1–9. It accepts PDF/TXT/Markdown reports and cited sources, extracts claims and methods, traces citations to uploaded sources and underlying datasets, checks hidden instructions and PDF safety signals, and presents evidence-backed findings with a deterministic severity-weighted score and interactive graph. The intake/result interface, privacy receipt, treatment checklist, lab log, print view, optional OpenAI-compatible analysis, Crossref/OpenAlex lookup, and ElevenLabs briefing are included.
 
-Nothing was skipped for time. Credential-backed LLM and ElevenLabs calls were exercised with mocked responses but not live accounts because no credentials were configured. Crossref/OpenAlex field shapes and the ElevenLabs endpoint/model were checked against live documentation/API responses. Known limitations: OCR and white-text detection are not supported; the PDF scan is a narrow byte-pattern check; rate limiting is process-local and resets on restart.
+Nothing was skipped for time. Credential-backed LLM and ElevenLabs calls were exercised with mocked responses but not live accounts because no credentials were configured. Crossref/OpenAlex field shapes and the ElevenLabs endpoint/model were checked against live documentation/API responses. Known limitations: OCR and white-text detection are not supported; the PDF scan is a narrow byte-pattern check; rate limiting is process-local and resets on restart. Review factors now distinguish partial screening from unassessed work: there is no independent fact-check, raw-data validation, reliable AI-authorship detector, or source-authority rating.
 
 Exact demo steps:
 

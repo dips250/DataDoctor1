@@ -60,7 +60,7 @@ export default function Home() {
     setBriefBusy(true);
     setBriefError('');
     try {
-      const summary = `Evidence Health score ${result.score.overall}. Findings: ${result.findings.map((f) => `${f.title}. ${f.whatWasFound}.`).join(' ')} ${result.score.meaning}`;
+      const summary = `Automated review signal ${result.score.overall}. Findings: ${result.findings.map((f) => `${f.title}. ${f.whatWasFound}.`).join(' ')} ${result.score.meaning}`;
       const response = await fetch('/api/brief', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
@@ -204,10 +204,10 @@ export default function Home() {
 
           <div className="scoregrid">
             <div className="scorecard">
-              <div className="score-ring-wrap"><span className="score-orbit" /><div className="ring" style={{ '--score': `${result.score.overall}%` } as React.CSSProperties}><span>{result.score.overall}<small>/100</small></span></div><span className="ring-caption">EVIDENCE HEALTH</span></div>
-              <div className="score-copy"><p className="eyebrow">SIGNAL SUMMARY</p><h2>Evidence Health</h2><p>{result.score.meaning}</p><span className="score-caveat">A review signal, not a measure of truth. Not scientifically validated.</span></div>
+              <div className="score-ring-wrap"><span className="score-orbit" /><div className="ring" style={{ '--score': `${result.score.overall}%` } as React.CSSProperties}><span>{result.score.overall}<small>/100</small></span></div><span className="ring-caption">AUTOMATED SIGNAL</span></div>
+              <div className="score-copy"><p className="eyebrow">SCREENING SUMMARY</p><h2>Review signal</h2><p>{result.score.meaning}</p><span className="score-caveat">Open each factor to see coverage, limits, and document-backed findings.</span></div>
             </div>
-            <div className="categories"><div className="categories-head"><span>REVIEW DIMENSIONS</span><span>SCORE</span></div>{result.score.categories.map((category, index) => <details key={category.name} open={index === 0}><summary><span>{category.name}</span><b>{category.score}<small>/100</small></b></summary><div className="bar"><i style={{ width: `${category.score}%` }} /></div>{category.reasons.length > 0 ? <ul>{category.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul> : <p>No score deductions in this category.</p>}</details>)}</div>
+            <div className="categories"><div className="categories-head"><span>REQUESTED REVIEW FACTORS</span><span>CHECK</span></div>{result.score.categories.map((category, index) => <details key={category.name} open={index === 0}><summary><span>{category.name}</span><span className={`dimension-status ${category.status}`}>{category.score === null ? 'NOT ASSESSED' : `PARTIAL · ${category.score}/100`}</span></summary>{category.score !== null && <div className="bar"><i style={{ width: `${category.score}%` }} /></div>}<p className="dimension-guidance">{category.guidance}</p><ul>{category.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul></details>)}</div>
           </div>
 
           {result.findings.filter((finding) => finding.type === 'hidden_instruction').map((finding) => (

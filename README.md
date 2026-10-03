@@ -69,22 +69,30 @@ Core modules live in `src/lib/pipeline/`; detectors are in `src/lib/detectors/`.
 
 Each finding has one label: `FACT`, `POTENTIAL_CONCERN`, `INTERPRETATION`, or `UNKNOWN`. Findings without a verified quote or a public-record URL are removed before display. Uploaded text is rendered as text, never as HTML.
 
-Each score category begins at 100. The table gives base deductions by finding type; the severity multiplier is applied to each deduction, then the category is clamped to 0–100. The overall score is the rounded mean of the seven categories.
+The report is organized around seven review factors. Coverage is shown for every factor so a score is never presented as proof that a claim, dataset, author, or source is trustworthy. `Not assessed` factors are excluded from the overall screening signal.
 
-| Category | Finding type | Base points |
+| Review factor | Coverage | Signals included in its partial score |
+| --- | --- | --- |
+| Bias | Partial | Narrow generalized samples; causal wording in survey or observational research |
+| False claims | Not assessed | No independent fact-checking against authoritative references |
+| False evidence | Partial integrity screen | Hidden instructions and risky file features; no authenticity verdict |
+| Corrupt data | Not assessed | Raw datasets and statistical results are not validated |
+| AI-based claims | Partial | Explicit AI-use statements and hidden instructions; no AI-authorship classifier |
+| Author & conflict check | Partial | Disclosed funding, commercial relationships, and extracted affiliation statements |
+| Source quality | Partial | Citation matching, untraced statistics, and shared underlying sources; no source reputation score |
+
+For scored factors, each starts at 100 and receives severity-weighted deductions from the following signals. Scores are clamped to 0–100.
+
+| Review factor | Finding type | Base points |
 | --- | --- | ---: |
-| Document integrity | Hidden instruction | 60 |
-| Document integrity | File safety flag | 50 |
-| Source transparency | Funding statement not found | 22 |
-| Evidence traceability | Evidence dependency | 40 |
-| Evidence traceability | Untraced statistic | 18 |
-| Methodological strength | Sampling limitation | 40 |
-| Methodological strength | Causal language in survey or observational research | 14 |
-| Independence | Funding conflict | 50 |
-| Conflict transparency | Funding conflict | 32 |
-| Conflict transparency | Funding statement not found | 24 |
-| Verification | Untraced statistic | 32 |
-| Verification | Evidence dependency | 20 |
+| Bias | Sampling limitation | 38 |
+| Bias | Causal language | 12 |
+| False evidence | Hidden instruction | 45 |
+| False evidence | File safety flag | 38 |
+| Author & conflict check | Funding conflict | 48 |
+| Author & conflict check | Funding statement not found | 24 |
+| Source quality | Untraced statistic | 24 |
+| Source quality | Evidence dependency | 25 |
 
 | Severity | Multiplier |
 | --- | ---: |
@@ -93,7 +101,9 @@ Each score category begins at 100. The table gives base deductions by finding ty
 | Low | 0.50 |
 | Info | 0.35 |
 
-The score summarizes investigation signals. It is not a measure of truth and has not been scientifically validated.
+The overall number is the rounded mean of the four partial numeric factors above. It is a rough screening signal, not a measure of truth, bias, data integrity, or trustworthiness, and it has not been scientifically validated. A high number does not clear a document. Disclosed AI use is informational and does not lower a score.
+
+DataDoctor does not call a claim false solely because its source is missing, nor does it label evidence fabricated or data corrupt without validation. Author names and affiliations are extracted from document text and optional public metadata; they are not credential or background checks. Source checks establish citation links and metadata only, not whether a publisher or author is authoritative.
 
 ## Security and privacy
 
