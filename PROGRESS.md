@@ -9,13 +9,13 @@ In progress. Core ingestion, screening, extraction, linking, deterministic detec
 - Step 3: done — upload magic-byte checks, PDF active-content scan, redaction utilities, per-IP rate limits, security headers and evidence-backed safety findings. Commit hash: 7d420c4.
 - Step 4: done — page-by-page PDF extraction and limits, tiny-font detection, generated demo PDF, PDF multipart upload and passing production smoke test. Commit hash: 491082d.
 - Step 5: done — React Flow chain with citation, source-document and shared root nodes; finding controls highlight connected nodes and edges. Commit hash: 71f95e5.
-- Step 6: done — optional OpenAI-compatible quote extraction and plain-language rewriting with redaction, delimiters, retries, quote checks and lint fallback; mode badges read `/api/status`. Commit hash: pending.
-- Step 7: not started — optional public records, print report and README. Commit hash: —.
+- Step 6: done — optional OpenAI-compatible quote extraction and plain-language rewriting with redaction, delimiters, retries, quote checks and lint fallback; mode badges read `/api/status`. Commit hash: 1ef0dca.
+- Step 7: done — Crossref/OpenAlex DOI enrichment, checked author/institution fields, print CSS and complete README. Commit hash: pending.
 - Step 8: not started — optional ElevenLabs briefing. Commit hash: —.
 - Step 9: not started — hardening. Commit hash: —.
 
 ## Last verification
-2026-10-03 21:44 UTC — typecheck: pass; tests: pass (17); production build: pass; smoke: pass (health, demo findings, uploaded demo PDF tiny-font finding, production security headers); lint: pass.
+2026-10-03 21:50 UTC — typecheck: pass; tests: pass (19); production build: pass; smoke: pass (health, demo findings, uploaded demo PDF tiny-font finding, production security headers); lint: pass.
 
 ## Assumptions made
 - The repository checkout is `/workspace/DataDoctor`; the workspace root itself is not the repository.
