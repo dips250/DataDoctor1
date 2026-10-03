@@ -4,8 +4,8 @@
 In progress. Core ingestion, screening, extraction, linking, deterministic detectors, scoring, validation, the demo fixtures, API endpoints, and the intake/results interface are implemented. The core pipeline is implemented; the full intake/results interface is staged as step 2.
 
 ## Steps 1 to 9
-- Step 1: done — scaffold, core pipeline, demo API, deterministic findings and tests. Commit hash: recorded in the next progress update.
-- Step 2: not started — responsive intake and results interface. Commit hash: —.
+- Step 1: done — scaffold, core pipeline, demo API, deterministic findings and tests. Commit hash: 6b89fc6.
+- Step 2: in progress — responsive intake and results interface. Commit hash: pending.
 - Step 3: not started — security and privacy. Commit hash: —.
 - Step 4: not started — PDF path and smoke test. Commit hash: —.
 - Step 5: not started — evidence chain graph. Commit hash: —.
