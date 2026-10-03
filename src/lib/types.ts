@@ -2,7 +2,7 @@ import { z } from 'zod';
 export const EvidenceRefSchema=z.object({kind:z.enum(['quote','record']),docId:z.string().optional(),fileName:z.string().optional(),page:z.number().optional(),quote:z.string().optional(),url:z.string().optional(),recordSource:z.enum(['crossref','openalex']).optional(),method:z.string().optional(),note:z.string().optional()});
 export const PageSchema=z.object({page:z.number(),text:z.string()});
 export const FileSafetyReportSchema=z.object({detectedType:z.enum(['pdf','text']),typeMatchesExtension:z.boolean(),pdfFlags:z.array(z.string()),encrypted:z.boolean()});
-export const SourceDocSchema=z.object({id:z.string(),fileName:z.string(),role:z.enum(['primary','cited']),pages:z.array(PageSchema),hiddenSpans:z.array(z.object({page:z.number(),text:z.string(),method:z.string()})),safety:FileSafetyReportSchema});
+export const SourceDocSchema=z.object({id:z.string(),fileName:z.string(),role:z.enum(['primary','cited']),pages:z.array(PageSchema),hiddenSpans:z.array(z.object({page:z.number(),text:z.string(),method:z.string()})),safety:FileSafetyReportSchema,ingestNotes:z.array(z.string()).optional()});
 export const EntitySchema=z.object({id:z.string(),type:z.enum(['person','organization','funder','dataset','product','document']),name:z.string(),aliases:z.array(z.string()),refs:z.array(EvidenceRefSchema)});
 export const RelationSchema=z.object({from:z.string(),to:z.string(),type:z.enum(['authored','affiliated_with','funded_by','sells','owns','cites','derived_from','published_by','about']),refs:z.array(EvidenceRefSchema)});
 export const ClaimSchema=z.object({id:z.string(),text:z.string(),statistic:z.string().optional(),citationKeys:z.array(z.string()),causalLanguage:z.boolean(),generalizes:z.boolean(),refs:z.array(EvidenceRefSchema)});

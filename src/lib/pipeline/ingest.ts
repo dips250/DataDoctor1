@@ -6,6 +6,6 @@ export function ingestText(fileName:string,text:string,role:'primary'|'cited',id
  const normalized=text.replace(/\r\n?/g,'\n'); const chunks:string[]=[]; let buf='';
  for(const p of normalized.split(/\n\s*\n/)){if(buf.length+p.length>3000&&buf){chunks.push(buf);buf='';}buf+=(buf?'\n\n':'')+p;}
  if(buf)chunks.push(buf);
- return {id,fileName,role,pages:chunks.map((t,i)=>({page:i+1,text:t})),hiddenSpans:[],safety:{detectedType:'text',typeMatchesExtension:/\.(txt|md)$/i.test(fileName),pdfFlags:[],encrypted:false}};
+ return {id,fileName,role,pages:chunks.map((t,i)=>({page:i+1,text:t})),hiddenSpans:[],safety:{detectedType:'text',typeMatchesExtension:/\.(txt|md)$/i.test(fileName),pdfFlags:[],encrypted:false},ingestNotes:[]};
 }
 export function ingestFixture(files:{fileName:string;role:'primary'|'cited';text:string}[]):SourceDoc[]{if(files.length>MAX_FILES)throw new IngestError('Upload up to 6 files.',413);return files.map((f,i)=>ingestText(f.fileName,f.text,f.role,`doc-${i+1}`));}

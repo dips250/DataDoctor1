@@ -1,0 +1,11 @@
+import {describe,it,expect} from 'vitest';
+import {readFile} from 'node:fs/promises';
+import {PDFDocument} from 'pdf-lib';
+import {ingestPdf} from '@/lib/pipeline/ingestPdf';
+import {validateUploadedFile} from '@/lib/pipeline/fileSafety';
+import {analyze} from '@/lib/pipeline/analyze';
+describe('PDF ingestion',()=>{
+ it('extracts the fictional fixture and detects the tiny-font instruction',async()=>{const bytes=new Uint8Array(await readFile('public/demo/primary-report.pdf'));const safety=validateUploadedFile('primary-report.pdf',bytes);const doc=await ingestPdf('primary-report.pdf',bytes,'primary','pdf-1',safety);expect(doc.pages.length).toBe(1);expect(doc.hiddenSpans.some(h=>h.method==='tiny font')).toBe(true);const findings=analyze([doc]).findings;expect(findings.some(f=>f.type==='hidden_instruction'&&f.evidence.some(e=>e.method==='tiny font'))).toBe(true);for(const type of ['funding_conflict','sampling_limitation','untraced_statistic','causal_language'])expect(findings.some(f=>f.type===type)).toBe(true);});
+ it('truncates after page 40 with a note',async()=>{const pdf=await PDFDocument.create();for(let i=0;i<41;i++)pdf.addPage([100,100]).drawText(`Page ${i+1}`);const bytes=new Uint8Array(await pdf.save());const doc=await ingestPdf('many.pdf',bytes,'primary','many',validateUploadedFile('many.pdf',bytes));expect(doc.pages).toHaveLength(40);expect(doc.ingestNotes?.[0]).toContain('first 40 of 41');});
+ it('gives the friendly scanned PDF error',async()=>{const pdf=await PDFDocument.create();pdf.addPage([100,100]);const bytes=new Uint8Array(await pdf.save());await expect(ingestPdf('scan.pdf',bytes,'primary','scan',validateUploadedFile('scan.pdf',bytes))).rejects.toThrow("This PDF has no text layer (it's a scanned image). OCR isn't supported yet.");});
+});
