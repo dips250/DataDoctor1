@@ -21,7 +21,7 @@ Exact demo steps:
 - Step 6: done — optional OpenAI-compatible quote extraction and plain-language rewriting with redaction, delimiters, retries, quote checks and lint fallback; mode badges read `/api/status`. Commit hash: 1ef0dca.
 - Step 7: done — Crossref/OpenAlex DOI enrichment, checked author/institution fields, print CSS and complete README. Commit hash: 1ccbdf4.
 - Step 8: done — optional ElevenLabs audio briefing using redacted summaries, verified REST endpoint/model, friendly failure states and privacy receipt updates. Commit hash: 59d5181.
-- Step 9: done — empty/wrong-type/encrypted/unsafe/scanned/long PDFs, file-count and byte limits, sparse reports, service failures, concurrent requests, per-detector tests, actual stage timings, request-size guards and clean-state audit. Commit hash: pending final commit.
+- Step 9: done — empty/wrong-type/encrypted/unsafe/scanned/long PDFs, file-count and byte limits, sparse reports, service failures, concurrent requests, per-detector tests, actual stage timings, request-size guards and clean-state audit. Commit hash: 3ddbbbb.
 
 ## Last verification
 2026-10-03 22:17 UTC — `npm ci`: pass; `npm run typecheck`: pass; `npm test`: pass (36 tests); `npm run build`: pass with the default `next build` script; `npm run smoke`: pass (health, demo in under 5 seconds with all optional variables empty, uploaded demo PDF hidden instruction, and production security headers); `npm run lint`: pass. Separately started the production build with `npm start`; `/api/health` returned 200 and `/api/status` returned all optional modes off.
