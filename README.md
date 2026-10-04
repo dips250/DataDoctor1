@@ -74,25 +74,31 @@ The report is organized around seven review factors. Coverage is shown for every
 | Review factor | Coverage | Signals included in its partial score |
 | --- | --- | --- |
 | Bias | Partial | Narrow generalized samples; causal wording in survey or observational research |
-| False claims | Not assessed | No independent fact-checking against authoritative references |
-| False evidence | Partial integrity screen | Hidden instructions and risky file features; no authenticity verdict |
-| Corrupt data | Not assessed | Raw datasets and statistical results are not validated |
-| AI-based claims | Partial | Explicit AI-use statements and hidden instructions; no AI-authorship classifier |
+| False claims | Partial | Numeric disagreement between a claim and supplied cited documents or a labeled excerpt in the report; no independent fact-checking |
+| False evidence | Partial integrity screen | Hidden instructions, risky file features, untraced statistics, and supplied-source disagreement; no authenticity verdict |
+| Corrupt data | Partial | A simple total-versus-itemized count check; no raw data or provenance validation |
+| AI-based claims | Partial | Hidden instructions aimed at AI reviewers; no AI-authorship classifier |
 | Author & conflict check | Partial | Disclosed funding, commercial relationships, and extracted affiliation statements |
-| Source quality | Partial | Citation matching, untraced statistics, and shared underlying sources; no source reputation score |
+| Source quality | Partial | Citation matching, untraced statistics, source disagreement, and shared underlying sources; no source reputation score |
 
 For scored factors, each starts at 100 and receives severity-weighted deductions from the following signals. Scores are clamped to 0–100.
 
 | Review factor | Finding type | Base points |
 | --- | --- | ---: |
-| Bias | Sampling limitation | 38 |
-| Bias | Causal language | 12 |
-| False evidence | Hidden instruction | 45 |
+| Bias | Sampling limitation | 60 |
+| Bias | Causal language | 14 |
+| False claims | Claim-source discrepancy | 78 |
+| False evidence | Hidden instruction | 28 |
 | False evidence | File safety flag | 38 |
-| Author & conflict check | Funding conflict | 48 |
+| False evidence | Untraced statistic | 14 |
+| False evidence | Claim-source discrepancy | 15 |
+| Corrupt data | Data count inconsistency | 68 |
+| AI-based claims | Hidden instruction | 68 |
+| Author & conflict check | Funding conflict | 64 |
 | Author & conflict check | Funding statement not found | 24 |
-| Source quality | Untraced statistic | 24 |
-| Source quality | Evidence dependency | 25 |
+| Source quality | Untraced statistic | 50 |
+| Source quality | Evidence dependency | 28 |
+| Source quality | Claim-source discrepancy | 30 |
 
 | Severity | Multiplier |
 | --- | ---: |
@@ -101,7 +107,7 @@ For scored factors, each starts at 100 and receives severity-weighted deductions
 | Low | 0.50 |
 | Info | 0.35 |
 
-The overall number is the rounded mean of the four partial numeric factors above. It is a rough screening signal, not a measure of truth, bias, data integrity, or trustworthiness, and it has not been scientifically validated. A high number does not clear a document. Disclosed AI use is informational and does not lower a score.
+The overall number is the rounded mean of the seven partial numeric factors above. It is a rough screening signal, not a measure of truth, bias, data integrity, or trustworthiness, and it has not been scientifically validated. A high number does not clear a document. Disclosed AI use is informational and does not lower a score. A source discrepancy means the supplied documents disagree; it does not establish which figure is correct. A count inconsistency is an arithmetic check, not proof of tampering. The bundled chemistry sample is clearly marked fictional and intentionally contains these review signals.
 
 DataDoctor does not call a claim false solely because its source is missing, nor does it label evidence fabricated or data corrupt without validation. Author names and affiliations are extracted from document text and optional public metadata; they are not credential or background checks. Source checks establish citation links and metadata only, not whether a publisher or author is authoritative.
 

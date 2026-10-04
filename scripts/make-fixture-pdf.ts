@@ -83,8 +83,8 @@ function readBlocks(lines: string[]): { title: string; authors: string; affiliat
 }
 
 function drawHeader(page: PDFPage, fonts: { regular: PDFFont; bold: PDFFont }, pageNumber: number) {
-  page.drawText('JOURNAL OF OCCUPATIONAL SYSTEMS AND HUMAN FACTORS', { x: margin, y: 757, size: 7, font: fonts.bold, color: accent });
-  page.drawText('FICTIONAL ARTICLE | SOFTWARE EVALUATION', { x: 382, y: 757, size: 6.1, font: fonts.bold, color: muted });
+  page.drawText('ANNALS OF APPLIED CHEMISTRY', { x: margin, y: 757, size: 7, font: fonts.bold, color: accent });
+  page.drawText('FICTIONAL ARTICLE | CRYSTALLIZATION STUDY', { x: 365, y: 757, size: 6.1, font: fonts.bold, color: muted });
   page.drawLine({ start: { x: margin, y: 749 }, end: { x: paperWidth - margin, y: 749 }, thickness: .7, color: rule });
   page.drawLine({ start: { x: margin, y: 42 }, end: { x: paperWidth - margin, y: 42 }, thickness: .55, color: rule });
   page.drawText('SIMULATED RESEARCH ARTICLE | ALL STUDY DETAILS ARE INVENTED', { x: margin, y: 29, size: 6, font: fonts.regular, color: muted });
